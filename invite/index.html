@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Open Graph tags for rich link previews -->
+    <meta property="og:title" content="You're invited to Family Cart!">
+    <meta property="og:description" content="Join the family and share shopping lists that sync instantly.">
+    <meta property="og:image" content="https://familycart.shattersoft.com/invite/preview.png">
+    <meta property="og:url" content="https://familycart.shattersoft.com/invite/">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="You're invited to Family Cart!">
+    <meta name="twitter:description" content="Join the family and share shopping lists that sync instantly.">
+    <meta name="twitter:image" content="https://familycart.shattersoft.com/invite/preview.png">
+
+    <!-- iOS Smart App Banner (add app-id once the App Store listing exists) -->
+    <!-- <meta name="apple-itunes-app" content="app-id=YOUR_APP_ID"> -->
+
+    <title>Family Cart Invite</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(160deg, #eef0ff 0%, #f7f8ff 55%, #ffffff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle floating brand dots */
+        .dot { position: fixed; border-radius: 50%; pointer-events: none; }
+        .dot-1 { top: 8%;  left: 10%; width: 14px; height: 14px; background: rgba(79, 70, 229, 0.10); }
+        .dot-2 { top: 14%; right: 12%; width: 20px; height: 20px; background: rgba(251, 191, 36, 0.12); }
+        .dot-3 { top: 70%; left: 8%;  width: 16px; height: 16px; background: rgba(99, 102, 241, 0.10); }
+        .dot-4 { top: 80%; right: 14%; width: 12px; height: 12px; background: rgba(251, 191, 36, 0.10); }
+        .dot-5 { top: 40%; right: 6%; width: 10px; height: 10px; background: rgba(79, 70, 229, 0.08); }
+
+        .card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 16px 48px rgba(27, 26, 51, 0.12);
+            border: 1px solid #ECEEFB;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            width: 112px;
+            height: 112px;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 28px rgba(79, 70, 229, 0.30);
+        }
+
+        h1 {
+            color: #1B1A33;
+            font-size: 23px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            line-height: 1.25;
+        }
+
+        .subtitle {
+            color: #7F7EA6;
+            font-size: 16px;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4F46E5 0%, #3B5BDB 100%);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 16px 40px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
+        }
+        .button:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(79, 70, 229, 0.45); }
+        .button:active { transform: translateY(0); }
+
+        .loading {
+            display: none;
+            color: #7F7EA6;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        .loading.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="dot dot-1"></div>
+    <div class="dot dot-2"></div>
+    <div class="dot dot-3"></div>
+    <div class="dot dot-4"></div>
+    <div class="dot dot-5"></div>
+
+    <div class="card">
+        <img src="logo.png" alt="Family Cart" class="logo">
+        <h1>You're invited to Family Cart!</h1>
+        <p class="subtitle">Share shopping lists with your family — groceries, Costco, hardware store — synced instantly.</p>
+
+        <a href="#" class="button" id="openApp">Open in App</a>
+
+        <p class="loading" id="loading">Opening Family Cart…</p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const profile = params.get('profile');
+        const family = params.get('family');
+        const share = params.get('share');
+        const familyName = params.get('familyName');
+
+        if (familyName) {
+            document.querySelector('h1').textContent =
+                `You're invited to join ${familyName} on Family Cart!`;
+        }
+
+        // Build the app deep link (scheme: familylists://join).
+        let appUrl = `familylists://join?profile=${encodeURIComponent(profile || '')}`;
+        if (family) { appUrl += `&family=${encodeURIComponent(family)}`; }
+        if (share)  { appUrl += `&share=${encodeURIComponent(share)}`; }
+
+        const openAppButton = document.getElementById('openApp');
+        const loadingText = document.getElementById('loading');
+
+        openAppButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            loadingText.classList.add('show');
+            window.location.href = appUrl;
+
+            // Still here after 2s → app probably isn't installed.
+            setTimeout(function () {
+                loadingText.textContent = 'App not installed? Get Family Cart from the App Store.';
+                // Uncomment once the App Store listing exists:
+                // window.location.href = 'https://apps.apple.com/app/idYOUR_APP_ID';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

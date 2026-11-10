@@ -17,8 +17,8 @@
     <meta name="twitter:description" content="Join the family and share shopping lists that sync instantly.">
     <meta name="twitter:image" content="https://familycart.shattersoft.com/invite/preview.png">
 
-    <!-- iOS Smart App Banner (add app-id once the App Store listing exists) -->
-    <!-- <meta name="apple-itunes-app" content="app-id=YOUR_APP_ID"> -->
+    <!-- iOS Smart App Banner — native "Open / Get" banner in Safari for the real listing. -->
+    <meta name="apple-itunes-app" content="app-id=6815772091">
 
     <title>Family Cart Invite</title>
 
@@ -103,6 +103,8 @@
             margin-top: 20px;
         }
         .loading.show { display: block; }
+        .loading a { color: #4F46E5; font-weight: 700; text-decoration: none; }
+        .loading a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -147,11 +149,12 @@
             loadingText.classList.add('show');
             window.location.href = appUrl;
 
-            // Still here after 2s → app probably isn't installed.
+            // Still here after 2s → app probably isn't installed. Show a real, tappable
+            // App Store link (not an auto-redirect, which can misfire if the app did open).
             setTimeout(function () {
-                loadingText.textContent = 'App not installed? Get Family Cart from the App Store.';
-                // Uncomment once the App Store listing exists:
-                // window.location.href = 'https://apps.apple.com/app/idYOUR_APP_ID';
+                loadingText.innerHTML =
+                    "Don't have the app yet? " +
+                    '<a href="https://apps.apple.com/app/id6815772091">Get Family Cart on the App Store</a>.';
             }, 2000);
         });
     </script>
